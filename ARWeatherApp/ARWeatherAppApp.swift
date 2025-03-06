@@ -12,7 +12,6 @@ struct ARWeatherAppApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-            // Sample commit to connect this project to existing remote
         }
     }
 }
