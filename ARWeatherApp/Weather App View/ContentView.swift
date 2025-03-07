@@ -23,6 +23,10 @@ struct ContentView: View {
                     .transition(.scale)
             }
             
+            if let weatherData = viewModel.weatherDetails?.description {
+                Text(weatherData)
+            }
+            
             Spacer()
             
             // Search toggle
