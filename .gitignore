@@ -9,7 +9,7 @@ DerivedData/
 *.perspectivev3
 xcuserdata/
 
-Constants.swift
+Secrets.xcconfig
 
 # Swift Package Manager
 /.swiftpm
