@@ -1,5 +1,13 @@
 import Foundation
 
+enum HttpMethods: String {
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+    case patch = "PATCH"
+    case delete = "DELETE"
+}
+
 enum NetworkError: Error {
     case invalidURL
     case requestFailed(Error)
@@ -10,11 +18,10 @@ enum NetworkError: Error {
 protocol NetworkManaging {
     func request<T: Decodable>(
         endpoint: String,
-        method: String,
+        method: HttpMethods,
         headers: [String: String]?,
-        body: Data?,
-        completion: @escaping (Result<T, NetworkError>) -> Void
-    )
+        body: Data?
+    ) async throws -> T
 }
 
 class NetworkManager: NetworkManaging {
@@ -28,18 +35,16 @@ class NetworkManager: NetworkManaging {
     
     func request<T: Decodable>(
         endpoint: String,
-        method: String,
+        method: HttpMethods,
         headers: [String: String]? = nil,
-        body: Data? = nil,
-        completion: @escaping (Result<T, NetworkError>) -> Void
-    ) {
+        body: Data? = nil
+    ) async throws -> T {
         guard let url = URL(string: baseURL + endpoint) else {
-            completion(.failure(.invalidURL))
-            return
+            throw NetworkError.invalidURL
         }
         
         var request = URLRequest(url: url)
-        request.httpMethod = method
+        request.httpMethod = method.rawValue
         request.httpBody = body
         
         if let headers = headers {
@@ -48,23 +53,16 @@ class NetworkManager: NetworkManaging {
             }
         }
         
-        session.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(.requestFailed(error)))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode), let data = data else {
-                completion(.failure(.invalidResponse))
-                return
-            }
-            
-            do {
-                let decodedData = try JSONDecoder().decode(T.self, from: data)
-                completion(.success(decodedData))
-            } catch {
-                completion(.failure(.decodingFailed(error)))
-            }
-        }.resume()
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+            throw NetworkError.invalidResponse
+        }
+        
+        do {
+            let decodedData = try JSONDecoder().decode(T.self, from: data)
+            return decodedData
+        } catch {
+            throw NetworkError.decodingFailed(error)
+        }
     }
 }
