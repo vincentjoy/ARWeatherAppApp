@@ -15,9 +15,22 @@
 		BFF1B5C92D7B1EA5002CA69F /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BFF1B6DD2D7B5E37002CA69F /* Exceptions for "ARWeatherApp" folder in "ARWeatherApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = BFF1B3252D7997FA002CA69F /* ARWeatherApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BFF1B3282D7997FA002CA69F /* ARWeatherApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BFF1B6DD2D7B5E37002CA69F /* Exceptions for "ARWeatherApp" folder in "ARWeatherApp" target */,
+			);
 			path = ARWeatherApp;
 			sourceTree = "<group>";
 		};
@@ -134,7 +147,6 @@
 /* Begin XCBuildConfiguration section */
 		BFF1B3322D7997FB002CA69F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BFF1B5C92D7B1EA5002CA69F /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -198,7 +210,6 @@
 		};
 		BFF1B3332D7997FB002CA69F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BFF1B5C92D7B1EA5002CA69F /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -265,6 +276,7 @@
 				DEVELOPMENT_TEAM = BMZMVWGL7D;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ARWeatherApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -295,6 +307,7 @@
 				DEVELOPMENT_TEAM = BMZMVWGL7D;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ARWeatherApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

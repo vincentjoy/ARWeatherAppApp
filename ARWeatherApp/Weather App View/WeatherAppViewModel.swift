@@ -3,18 +3,28 @@ import Foundation
 @Observable
 final class WeatherAppViewModel {
     
+    private var task: Task<Void, Never>?
     private var networkManager: NetworkManager
-    var weatherDetails: WeatherDetails?
+    var weatherDetails: WeatherDetails? {
+        didSet {
+            print(weatherDetails)
+        }
+    }
     
     init() {
         networkManager = NetworkManager(baseURL: Config.baseUrl)
     }
     
     func fetchWeatherDetails(for city: String) {
-        Task {
+        
+        if task != nil {
+            task?.cancel()
+        }
+        
+        self.task = Task {
             do {
-                let location = try await locationData(for: city)
-                let weather = try await weatherData(for: location.key)
+                let location: Location = try await locationData(for: city)
+                let weather: Weather = try await weatherData(for: location.key)
                 self.weatherDetails = WeatherDetails(location: location, weather: weather)
             } catch {
                 print("Error: \(error)")

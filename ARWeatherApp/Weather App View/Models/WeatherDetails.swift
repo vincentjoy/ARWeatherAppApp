@@ -11,3 +11,9 @@ struct WeatherDetails {
         self.temperature = "\(weather.temperature.metric.value)°\(weather.temperature.metric.unit)"
     }
 }
+
+extension WeatherDetails: CustomStringConvertible {
+    var description: String {
+        return "\(localizedName) weather is \(weatherText) and temperature is \(temperature))"
+    }
+}

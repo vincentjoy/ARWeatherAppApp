@@ -11,6 +11,7 @@ struct ContentView: View {
     
     @State var cityName: String = "New York"
     @State var isSearchBarVisible: Bool = true
+    @State var viewModel = WeatherAppViewModel()
     
     var body: some View {
         
@@ -26,6 +27,9 @@ struct ContentView: View {
             
             // Search toggle
             SearchToggle(isSearchToggle: $isSearchBarVisible)
+        }
+        .onChange(of: cityName) { _, newValue in
+            viewModel.fetchWeatherDetails(for: newValue)
         }
     }
 }
