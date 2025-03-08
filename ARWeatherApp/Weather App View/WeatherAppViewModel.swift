@@ -5,7 +5,11 @@ final class WeatherAppViewModel {
     
     private var task: Task<Void, Never>?
     private var networkManager: NetworkManager
-    var weatherDetails: WeatherDetails?
+    var weatherDetails: WeatherDetails? {
+        didSet {
+            ARViewController.shared.receivedWeatherData = weatherDetails!
+        }
+    }
     
     init() {
         networkManager = NetworkManager(baseURL: Config.baseUrl)

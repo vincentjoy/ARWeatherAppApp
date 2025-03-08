@@ -8,7 +8,14 @@ final class ARViewController {
     
     static var shared = ARViewController()
     var arView: ARView
+    var receivedWeatherData: WeatherDetails = WeatherDetails(localizedName: "Bangalore", weatherText: "Sunny", temperature: "28 C") {
+        didSet {
+            updateModel(condition: receivedWeatherData.weatherText, temperature: receivedWeatherData.temperature)
+        }
+    }
     private var weatherModelAnchor: AnchorEntity?
+    private var weatherModelGenerator = WeatherARModelManager()
+    private var isWeatherBallPlaced: Bool = false
     
     init() {
         arView = ARView(frame: .zero)
@@ -51,13 +58,15 @@ final class ARViewController {
             // 3D pos (x, y, z)
             let worldPosition = simd_make_float3(firstResult.worldTransform.columns.3)
             
-            // Create 3D model
-            let mesh = MeshResource.generateSphere(radius: 0.03)
-            let material = SimpleMaterial(color: .black, isMetallic: true)
-            let model = ModelEntity(mesh: mesh, materials: [material])
-            
-            // Place that 3D model at the plane
-            placeObject(object: model, at: worldPosition)
+            if !isWeatherBallPlaced {
+                // Create 3D model
+                let weatherBall = weatherModelGenerator.generateWeatherARModel(condition: "sunny", temperature: receivedWeatherData.temperature)
+                
+                // Place that 3D model at the plane
+                placeObject(object: weatherBall, at: worldPosition)
+                
+                isWeatherBallPlaced = true
+            }
         }
     }
     
@@ -72,5 +81,19 @@ final class ARViewController {
         
         // 3. Add anchor to scene
         arView.scene.addAnchor(weatherModelAnchor!)
+    }
+    
+    private func updateModel(condition: String, temperature: String) {
+        
+        if let anchor = weatherModelAnchor {
+            
+            // Delete the previous
+            arView.scene.findEntity(named: "WeatherBall")?.removeFromParent()
+            
+            // New model
+            let newWeatherBall = weatherModelGenerator.generateWeatherARModel(condition: condition, temperature: temperature)
+            
+            anchor.addChild(newWeatherBall)
+        }
     }
 }
