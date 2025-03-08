@@ -15,25 +15,24 @@ struct ContentView: View {
     
     var body: some View {
         
-        VStack {
+        ZStack {
+            // AR View
+            ARViewDisplay()
             
-            if isSearchBarVisible {
-                // Search bar
-                SearchBar(cityName: $cityName)
-                    .transition(.scale)
+            // UI Controls
+            VStack {
+                if isSearchBarVisible {
+                    // Search bar
+                    SearchBar(cityName: $cityName)
+                        .transition(.scale)
+                }
+                Spacer()
+                // Search toggle
+                SearchToggle(isSearchToggle: $isSearchBarVisible)
             }
-            
-            if let weatherData = viewModel.weatherDetails?.description {
-                Text(weatherData)
+            .onChange(of: cityName) { _, newValue in
+                viewModel.fetchWeatherDetails(for: newValue)
             }
-            
-            Spacer()
-            
-            // Search toggle
-            SearchToggle(isSearchToggle: $isSearchBarVisible)
-        }
-        .onChange(of: cityName) { _, newValue in
-            viewModel.fetchWeatherDetails(for: newValue)
         }
     }
 }

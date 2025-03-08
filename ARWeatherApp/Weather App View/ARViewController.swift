@@ -7,7 +7,7 @@ import ARKit
 final class ARViewController {
     
     static var shared = ARViewController()
-    private var arView: ARView
+    var arView: ARView
     private var weatherModelAnchor: AnchorEntity?
     
     init() {
