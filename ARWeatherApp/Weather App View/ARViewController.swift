@@ -8,9 +8,9 @@ final class ARViewController {
     
     static var shared = ARViewController()
     var arView: ARView
-    var receivedWeatherData: WeatherDetails = WeatherDetails(localizedName: "Bangalore", weatherText: "Sunny", temperature: "28 C") {
+    var receivedWeatherData: WeatherDetails = WeatherDetails(localizedName: "Bangalore", weatherText: WeatherDetails.dummyWeatherText, temperature: "28 C") {
         didSet {
-            updateModel(condition: receivedWeatherData.weatherText, temperature: receivedWeatherData.temperature)
+            updateModel(condition: WeatherDetails.dummyWeatherText, temperature: receivedWeatherData.temperature)
         }
     }
     private var weatherModelAnchor: AnchorEntity?
@@ -60,7 +60,7 @@ final class ARViewController {
             
             if !isWeatherBallPlaced {
                 // Create 3D model
-                let weatherBall = weatherModelGenerator.generateWeatherARModel(condition: "sunny", temperature: receivedWeatherData.temperature)
+                let weatherBall = weatherModelGenerator.generateWeatherARModel(condition: WeatherDetails.dummyWeatherText, temperature: receivedWeatherData.temperature)
                 
                 // Place that 3D model at the plane
                 placeObject(object: weatherBall, at: worldPosition)

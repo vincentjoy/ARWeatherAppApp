@@ -4,6 +4,8 @@ struct WeatherDetails {
     let localizedName: String
     let weatherText: String
     let temperature: String
+    
+    static let dummyWeatherText: String = "rainy"
 }
 
 extension WeatherDetails {
