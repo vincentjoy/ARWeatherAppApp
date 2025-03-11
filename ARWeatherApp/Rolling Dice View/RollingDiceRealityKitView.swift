@@ -9,6 +9,7 @@ struct RollingDiceRealityKitView: UIViewRepresentable {
     class Coordinator: NSObject, ARSessionDelegate {
         weak var view: ARView?
         var focusEntity: FocusEntity?
+        var diceEntity: ModelEntity?
 
         func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
             guard let view = self.view else { return }
@@ -22,13 +23,40 @@ struct RollingDiceRealityKitView: UIViewRepresentable {
             // Create a new anchor to add content to
             let anchor = AnchorEntity()
             view.scene.anchors.append(anchor)
+            
+            guard diceEntity == nil else {
+                diceEntity!.addForce([0, 2, 0], relativeTo: nil)
+                diceEntity!.addTorque([Float.random(in: 0 ... 0.4), Float.random(in: 0 ... 0.4), Float.random(in: 0 ... 0.4)], relativeTo: nil)
+                return
+            }
 
             // Add a dice entity
-            let diceEntity = try! ModelEntity.loadModel(named: "Dice")
-            diceEntity.scale = [0.1, 0.1, 0.1]
-            diceEntity.position = focusEntity.position
+            diceEntity = try! ModelEntity.loadModel(named: "Dice")
+            diceEntity!.scale = [0.1, 0.1, 0.1]
+            diceEntity!.position = focusEntity.position
 
-            anchor.addChild(diceEntity)
+            anchor.addChild(diceEntity!)
+            
+            // Enabling Physics simulation for the dice, so it can be rolled
+            let size = diceEntity!.visualBounds(relativeTo: diceEntity!).extents
+            let boxShape = ShapeResource.generateBox(size: size)
+            diceEntity!.collision = CollisionComponent(shapes: [boxShape])
+            
+            diceEntity!.physicsBody = PhysicsBodyComponent(
+                massProperties: .init(shape: boxShape, mass: 50),
+                material: nil,
+                mode: .dynamic
+            )
+            
+            // Create a plane below the dice
+            let planeMesh = MeshResource.generatePlane(width: 2, depth: 2)
+            let material = SimpleMaterial(color: .init(white: 1.0, alpha: 0.1), isMetallic: false)
+            let planeEntity = ModelEntity(mesh: planeMesh, materials: [material])
+            planeEntity.position = focusEntity.position
+            planeEntity.physicsBody = PhysicsBodyComponent(massProperties: .default, material: nil, mode: .static)
+            planeEntity.collision = CollisionComponent(shapes: [.generateBox(width: 2, height: 0.001, depth: 2)])
+            planeEntity.position = focusEntity.position
+            anchor.addChild(planeEntity)
         }
     }
     
@@ -62,7 +90,7 @@ struct RollingDiceRealityKitView: UIViewRepresentable {
         
         // Set debug options
         #if DEBUG
-        view.debugOptions = [.showFeaturePoints, .showAnchorOrigins, .showAnchorGeometry]
+        view.debugOptions = [.showAnchorOrigins, .showPhysics]
         #endif
         
         return view

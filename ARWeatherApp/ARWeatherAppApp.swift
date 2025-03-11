@@ -11,8 +11,12 @@ import SwiftUI
 struct ARWeatherAppApp: App {
     var body: some Scene {
         WindowGroup {
+            /*
             ContentView()
                 .environment(ARViewController.shared)
+             */
+            
+            RollingDiceContentView()
         }
     }
 }
